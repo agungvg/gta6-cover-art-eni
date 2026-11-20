@@ -1,20 +1,41 @@
-// Fixed scenes for screenshots: ?shot=editor shows the app with photos loaded;
-// ?shot=cover shows one exported cover alone, at the size the query names.
-// `layout`, `grade`, `size`, `title`, `subtitle` and `photo` pick the scene.
-// window.__shotReady is set once the scene has painted.
-export async function runShot(shot, query, hooks) {
+// Vice Heat — screenshot scenes: a ?shot= query sets up one fixed scene
+// so the entry's screenshots are reproducible. `cover` dresses the poster
+// from the query (layout, grade, size, title, script, tagline, volume,
+// photo) and hides the editor chrome; `editor` leaves the default editor
+// state alone. Either way the page title becomes shot-ready once the
+// scene has drawn, which is what the screenshot script waits for.
+import { LAYOUTS, GRADES, SIZES, CAST } from './data.js';
+import { loadImage } from './editor.js';
+
+export async function runShot(shot, query, editor) {
+  const { state } = editor;
   if (shot === 'cover') {
     document.body.classList.add('shot-cover');
-    await hooks.cover({
-      size: query.get('size') ?? '1920x1080',
-      layout: query.get('layout') ?? 'vice-grid',
-      grade: query.get('grade') ?? 'sunset',
-      title: query.get('title') ?? undefined,
-      subtitle: query.get('subtitle') ?? undefined,
-      photo: query.get('photo') ?? 'hero',
-    });
+    const layout = query.get('layout');
+    if (layout && LAYOUTS[layout]) state.layout = layout;
+    const grade = query.get('grade');
+    if (grade && GRADES[grade]) state.grade = grade;
+    const size = query.get('size');
+    if (size && SIZES[size]) state.size = size;
+    if (query.get('title')) state.words.title = query.get('title');
+    if (query.get('script')) state.words.script = query.get('script');
+    if (query.get('tagline')) state.words.tagline = query.get('tagline');
+    if (query.get('volume')) state.words.volume = query.get('volume');
+    const photo = query.get('photo');
+    if (photo) {
+      const idx = CAST.findIndex((c) => c.file === `${photo}.jpg`);
+      if (idx >= 0) {
+        state.photos[0].sample = idx;
+        state.photos[0].img = await loadImage(`samples/${CAST[idx].file}`);
+        state.photos[0].zoom = 1; state.photos[0].ox = 0; state.photos[0].oy = 0;
+      }
+    }
+    editor.syncAll();
+    editor.applySize();
   }
+  editor.redraw();
   // Two frames so the canvas paint lands before the screenshot is taken.
   await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-  window.__shotReady = true;
+  document.title = 'shot-ready';
+  return true;
 }

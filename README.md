@@ -4,7 +4,7 @@
 [![rank](https://make.fun/badge/gta6-cover-art-01/agungvg/gta6-cover-art-eni/rank.svg)](https://make.fun/bounty/gta6-cover-art-01/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=gta6-cover-art-01)
 [![reward](https://make.fun/badge/gta6-cover-art-01/agungvg/gta6-cover-art-eni/reward.svg)](https://make.fun/bounty/gta6-cover-art-01?utm_source=github&utm_medium=readme&utm_campaign=gta6-cover-art-01)
 
-Vice Heat is an offline web app that turns any photo and caption into GTA 6-style multi-panel cover art — slanted photo panels over a procedural Vice City sunset skyline, chrome 3D lettering, cast role tags, a seal and a billing block — and exports it as a PNG in 1920×1080, 1080×1080 or 1080×1350. Seven layouts, six colour grades, per-panel crop controls with drag-to-pan and wheel-to-zoom, one-photo mode, presets and shuffle. Everything is drawn in code or bundled locally; no Rockstar Games logo, artwork or font is used, and photos never leave the machine.
+Vice Heat turns your photos into GTA VI-style multi-panel cover art — slanted panels over a procedural Vice City skyline, a huge striped-chrome title with a neon script subtitle, and the full poster furniture: a five-star press quote, volume badge, tagline strip, COMING SOON, billing block, barcode, gold starburst seal and a role tag on every panel. Seven layouts, six colour grades, face-aware crops (the face stays inside every panel), a three-step editor with per-panel controls and Look sliders, and one-click PNG export in 1920×1080, 1080×1080 and 1080×1350. Everything runs offline in the browser; photos never leave the machine. No Rockstar logo, artwork or font is used.
 
 ## Run it
 
@@ -12,7 +12,7 @@ Vice Heat is an offline web app that turns any photo and caption into GTA 6-styl
 node serve.ts
 ```
 
-Then open http://localhost:8080 in a desktop browser, load a photo, and hit **Export PNG**.
+Then open http://localhost:8080 in a desktop browser, load a photo, and hit **Export PNG** — or **Export all three sizes** for every post size at once.
 
 ---
 
