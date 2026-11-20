@@ -60,4 +60,7 @@ writeFileSync(join(outputDir, 'dossier.json'), dossier);
 
 // Say what was handed in, so a silent empty entry is obvious at a glance.
 const handedShots = readdirSync(join(outputDir, 'screenshots')).filter((name) => !name.startsWith('.'));
-console.log(`Vice Heat handed in: app/ + ${handedShots.length} screenshots + dossier.json -> ${outputDir}`);
+const dossierBytes = readdirSync(outputDir).includes('dossier.json')
+  ? (await import('node:fs')).statSync(join(outputDir, 'dossier.json')).size
+  : 0;
+console.log(`Vice Heat handed in: app/ + ${handedShots.length} screenshots + dossier.json (${dossierBytes} B) -> ${outputDir}`);

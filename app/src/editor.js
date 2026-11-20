@@ -24,7 +24,7 @@ export function freshState() {
   };
 }
 
-/** Serializable snapshot (images reloaded on undo). */
+/** A serializable snapshot of the state (images reload on undo). */
 function snapshot(state) {
   return JSON.stringify({
     words: state.words, layout: state.layout, grade: state.grade,
@@ -164,7 +164,7 @@ export function bootEditor(canvas) {
     commit();
     const slot = state.photos[state.selectedPanel] ?? state.photos[0];
     slot.img = await loadImage(URL.createObjectURL(file));
-    slot.sample = -1; // a custom photo has no cast role; tag stays editable
+    slot.sample = -1; // a custom photo has no cast role; the tag stays editable
     slot.zoom = 1; slot.ox = 0; slot.oy = 0;
     say(`Loaded ${file.name} into the selected panel.`);
     redraw();
@@ -173,9 +173,9 @@ export function bootEditor(canvas) {
   // ---- one-tap looks -----------------------------------------------------
   $('auto-layout').addEventListener('click', () => {
     commit();
-    // Pick the layout whose panel count best fits the photos on hand.
-    const counts = Object.keys(LAYOUTS);
-    state.layout = counts[(counts.indexOf(state.layout) + 1) % counts.length];
+    // Step to the next layout in the list.
+    const keys = Object.keys(LAYOUTS);
+    state.layout = keys[(keys.indexOf(state.layout) + 1) % keys.length];
     syncPickers();
     redraw();
     say(`Auto layout: ${LAYOUTS[state.layout].label}.`);
@@ -205,7 +205,7 @@ export function bootEditor(canvas) {
     $('preset-row').appendChild(button);
   });
 
-  // ---- layout thumbnails + grade chips + size tabs -----------------------
+  // ---- layout thumbnails, grade chips, size tabs -------------------------
   const layoutBox = $('layout-thumbs');
   Object.entries(LAYOUTS).forEach(([key, layout]) => {
     const button = document.createElement('button');
@@ -352,11 +352,11 @@ export function bootEditor(canvas) {
 
   // ---- Look sliders ------------------------------------------------------
   const lookDefs = [
-    ['look-paint', 'paint', 'Paint'],
-    ['look-grade', 'gradeAmt', 'Grade'],
-    ['look-halftone', 'halftone', 'Halftone'],
-    ['look-grain', 'grain', 'Grain'],
-    ['look-glow', 'glow', 'Glow'],
+    ['look-paint', 'paint'],
+    ['look-grade', 'gradeAmt'],
+    ['look-halftone', 'halftone'],
+    ['look-grain', 'grain'],
+    ['look-glow', 'glow'],
   ];
   lookDefs.forEach(([id, key]) => {
     const input = $(id);

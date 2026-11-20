@@ -12,7 +12,7 @@ Vice Heat turns your photos into GTA VI-style multi-panel cover art — slanted 
 node serve.ts
 ```
 
-Then open http://localhost:8080 in a desktop browser, load a photo, and hit **Export PNG** — or **Export all three sizes** for every post size at once.
+Then open http://localhost:8080 in a desktop browser: add photos in step 1, write the caption in step 2, and hit **Export PNG** in step 3 — or **Export all three sizes** for every post size at once.
 
 ---
 

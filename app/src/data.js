@@ -1,10 +1,10 @@
-// Vice Heat — poster data: layouts, grades, sizes, cast, furniture copy.
+// Vice Heat — the data layer: every number and word the poster draws.
 //
-// Everything the poster draws is data here, so the renderer (poster.js)
-// stays dumb and the editor (editor.js) only ever edits this state shape.
-// All words are invented for this entry: no Rockstar names, logos or art.
+// The renderer (poster.js) reads only this file for layout, colour and
+// copy, and the editor (editor.js) only ever mutates this state shape.
+// All copy is invented for this entry — no Rockstar names, logos or art.
 
-/** Export sizes: the three common post sizes, plus their labels. */
+/** The three export sizes and the labels the editor shows for them. */
 export const SIZES = {
   '1920x1080': { w: 1920, h: 1080, label: 'Landscape · 1920 × 1080' },
   '1080x1080': { w: 1080, h: 1080, label: 'Square · 1080 × 1080' },
@@ -12,10 +12,10 @@ export const SIZES = {
 };
 
 /**
- * The cast: the four bundled sample photos. `focus` is the face in photo
- * fractions (x, y) — the renderer keeps that point inside every panel it
- * draws the photo into, so a face never gets cropped out of a wide panel.
- * Roles are the slanted tags printed on each panel.
+ * The cast: the four bundled sample photos. `focus` is the face position
+ * in photo fractions — the renderer keeps that point inside every panel,
+ * so a face is never cropped out of a wide panel. `role` is the slanted
+ * tag printed on the panel that shows the photo.
  */
 export const CAST = [
   { file: 'hero.jpg', label: 'Palms Motel · Sunset', role: 'THE DRIVER', focus: { x: 0.42, y: 0.4 } },
@@ -25,10 +25,10 @@ export const CAST = [
 ];
 
 /**
- * Layouts: seven ways to split the poster. Panels are fractions of the
- * poster (x, y, w, h); `slant` shifts the top edge sideways so panel
- * borders lean like a comic-book page. `slot` is the photo slot (0..3)
- * the panel shows by default.
+ * Layouts: seven ways to split the poster into panels. Each panel is a
+ * fraction of the poster (x, y, w, h); `slant` leans the top edge sideways
+ * so the panel borders read like a comic-book page; `slot` is the photo
+ * slot (0..3) the panel shows by default.
  */
 export const LAYOUTS = {
   'sunset-mosaic': {
@@ -91,10 +91,11 @@ export const LAYOUTS = {
 };
 
 /**
- * Grades: six moods. Each one re-grades everything — the sky behind the
- * panels, the photo tint, the title stripes, the frame and the accent —
- * so the whole poster changes mood, not just a filter on the photos.
- * `quote` is the invented press quote printed across the top.
+ * Grades: six moods. A grade re-colours everything at once — the sky
+ * behind the panels, the photo tint, the title stripes, the frame and
+ * the accent — so the whole poster changes mood instead of just getting
+ * a filter on the photos. `quote` is the invented press quote printed
+ * across the top of every cover in that grade.
  */
 export const GRADES = {
   sunset: {
@@ -171,14 +172,14 @@ export const GRADES = {
   },
 };
 
-/** One-tap looks: layout + grade + size that go well together. */
+/** One-tap looks: a layout, grade and size that go well together. */
 export const PRESETS = [
   { label: 'Sunset Poster', layout: 'sunset-mosaic', grade: 'sunset', size: '1920x1080' },
   { label: 'Neon Night', layout: 'hero-pop', grade: 'neon', size: '1080x1350' },
   { label: 'Golden Hour', layout: 'triple-slant', grade: 'gold', size: '1080x1080' },
 ];
 
-/** The poster's words, editable in the Caption step. */
+/** The poster's words, editable in the Caption step of the wizard. */
 export function defaultWords() {
   return {
     title: 'VICE HEAT',

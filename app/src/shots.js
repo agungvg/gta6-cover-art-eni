@@ -9,6 +9,8 @@ import { loadImage } from './editor.js';
 
 export async function runShot(shot, query, editor) {
   const { state } = editor;
+  // A cover scene dresses the poster from the query; an editor scene
+  // leaves the default editor state alone.
   if (shot === 'cover') {
     document.body.classList.add('shot-cover');
     const layout = query.get('layout');

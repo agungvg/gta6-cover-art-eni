@@ -1,14 +1,14 @@
-// Vice Heat — the poster renderer: one draw function feeds the live
+// Vice Heat — the poster renderer. One draw function feeds both the live
 // preview and the PNG export, so what you see is exactly what you save.
 //
-// A poster is: a procedural backdrop (sky, sun, skyline), slanted photo
-// panels with focus-aware crops, one huge striped-chrome title with a
-// script subtitle, and the full poster furniture — press quote, volume
-// badge, tagline strip, COMING SOON, billing block, barcode, starburst
-// seal and a role tag on every panel.
+// A poster is built in layers: a procedural backdrop (sky, sun, skyline),
+// slanted photo panels with face-aware crops, one huge striped-chrome
+// title with a script subtitle, and the full poster furniture — press
+// quote, volume badge, tagline strip, COMING SOON, billing block,
+// barcode, starburst seal, and a role tag on every panel.
 import { LAYOUTS, GRADES, SIZES, CAST } from './data.js';
 
-/** Deterministic random, so preview and export grain match pixel for pixel. */
+/** Small deterministic PRNG, so preview and export grain match exactly. */
 function rng(seed) {
   let a = seed >>> 0;
   return () => {
@@ -20,9 +20,9 @@ function rng(seed) {
 }
 
 /**
- * Cover-fit source window for a photo in a panel, keeping the face
- * (focus, in photo fractions) inside the frame. `zoom` magnifies around
- * the focus; `ox`/`oy` pan the window in fractions of the panel.
+ * The source window of a photo inside a panel, keeping the face (focus,
+ * in photo fractions) inside the frame. `zoom` magnifies around the
+ * focus; `ox`/`oy` pan the window in fractions of the panel.
  */
 export function coverWindow(img, panelW, panelH, focus, zoom, ox, oy) {
   const iw = img.naturalWidth || img.width;
@@ -32,13 +32,14 @@ export function coverWindow(img, panelW, panelH, focus, zoom, ox, oy) {
   let sw; let sh;
   if (photoAspect > panelAspect) { sh = ih; sw = ih * panelAspect; }
   else { sw = iw; sh = iw / panelAspect; }
-  sw /= Math.max(1, zoom); sh /= Math.max(1, zoom);
-  // Centre the window on the focus where the photo allows it.
+  const z = Math.max(1, zoom);
+  sw /= z; sh /= z;
+  // Centre the window on the face where the photo allows it.
   let sx = focus.x * iw - sw / 2;
   let sy = focus.y * ih - sh / 2;
   sx = Math.max(0, Math.min(iw - sw, sx));
   sy = Math.max(0, Math.min(ih - sh, sy));
-  // The user's pan slides the window, clamped to the photo.
+  // The user's pan slides the window, clamped to the photo's edges.
   sx = Math.max(0, Math.min(iw - sw, sx - ox * sw));
   sy = Math.max(0, Math.min(ih - sh, sy - oy * sh));
   return { sx, sy, sw, sh };
@@ -61,7 +62,7 @@ function tracePath(ctx, corners) {
   ctx.closePath();
 }
 
-/** Sky gradient + sun + the grade's silhouette (skyline, grid or palms). */
+/** Sky gradient, glowing sun, and the grade's silhouette scenery. */
 function drawBackdrop(ctx, w, h, grade, look) {
   const sky = ctx.createLinearGradient(0, 0, 0, h);
   sky.addColorStop(0, grade.sky[0]);
@@ -108,15 +109,14 @@ function drawBackdrop(ctx, w, h, grade, look) {
     }
     ctx.globalAlpha = 1;
   } else if (grade.backdrop === 'dunes') {
-    // Rolling dune silhouettes along the bottom.
+    // Two rolling dune silhouettes along the bottom.
     ctx.beginPath();
     ctx.moveTo(0, h);
     ctx.lineTo(0, h * 0.9);
     ctx.quadraticCurveTo(w * 0.3, h * 0.78, w * 0.55, h * 0.88);
     ctx.quadraticCurveTo(w * 0.8, h * 0.97, w, h * 0.86);
     ctx.lineTo(w, h);
-    ctx.closePath();
-    ctx.fill();
+    ctx.closePath(); ctx.fill();
     ctx.globalAlpha = 0.6;
     ctx.beginPath();
     ctx.moveTo(0, h);
@@ -124,11 +124,10 @@ function drawBackdrop(ctx, w, h, grade, look) {
     ctx.quadraticCurveTo(w * 0.35, h * 0.86, w * 0.7, h * 0.94);
     ctx.quadraticCurveTo(w * 0.9, h * 0.98, w, h * 0.93);
     ctx.lineTo(w, h);
-    ctx.closePath();
-    ctx.fill();
+    ctx.closePath(); ctx.fill();
     ctx.globalAlpha = 1;
   } else {
-    // Wave lines across the bottom third.
+    // Three wave lines across the bottom third.
     ctx.strokeStyle = grade.accent;
     ctx.globalAlpha = 0.35;
     ctx.lineWidth = Math.max(1, w * 0.002);
@@ -219,11 +218,11 @@ function drawTitle(ctx, w, h, words, grade, look) {
   let size = w * 0.115;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  const fit = (s) => {
+  const measure = (s) => {
     ctx.font = `${s}px Anton, sans-serif`;
     return ctx.measureText(words.title).width;
   };
-  while (size > w * 0.04 && fit(size) > w * 0.96) size *= 0.94;
+  while (size > w * 0.04 && measure(size) > w * 0.96) size *= 0.94;
   ctx.font = `${size}px Anton, sans-serif`;
   const stripes = ctx.createLinearGradient(0, baseY - size * 0.5, 0, baseY + size * 0.5);
   grade.stripes.forEach((c, i) => stripes.addColorStop(i / (grade.stripes.length - 1), c));
@@ -239,7 +238,7 @@ function drawTitle(ctx, w, h, words, grade, look) {
   ctx.fillText(words.title, cx, baseY);
   ctx.restore();
 
-  // Script subtitle overlapping the block title, second typeface.
+  // Script subtitle overlapping the block title — the second typeface.
   const scriptSize = size * 0.34;
   ctx.save();
   ctx.translate(cx, baseY + size * 0.52);
@@ -389,7 +388,7 @@ function drawFurniture(ctx, w, h, grade, words, look) {
   ctx.restore();
 }
 
-/** Halftone dots + grain over the finished poster, from the Look sliders. */
+/** Halftone dots and grain over the finished poster, from the Look sliders. */
 function drawLook(ctx, w, h, look, seed) {
   if (look.halftone > 0.02) {
     const gap = Math.max(5, w * 0.006);

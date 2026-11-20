@@ -44,6 +44,7 @@ body {
   line-height: 1.45;
 }
 
+/* ---- top bar ---- */
 .topbar {
   display: flex;
   flex-wrap: wrap;
@@ -99,6 +100,7 @@ body {
 .undo-redo button:disabled { opacity: 0.4; cursor: default; }
 .offline-note { margin: 0; color: #ffe9d6; font-size: 13px; }
 
+/* ---- three-column layout ---- */
 .layout {
   display: grid;
   grid-template-columns: minmax(280px, 340px) minmax(0, 1fr) minmax(240px, 300px);
@@ -146,6 +148,7 @@ body {
 .hint { margin: 8px 0 0; font-size: 13px; color: var(--muted); }
 .row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
 
+/* ---- photo strip ---- */
 .strip { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .thumb {
   border: 1px solid var(--line);
@@ -167,6 +170,7 @@ body {
 .upload-label { display: block; margin-top: 10px; font-size: 13px; color: var(--muted); cursor: pointer; }
 .upload-label input { display: block; margin-top: 4px; }
 
+/* ---- buttons ---- */
 .ghost {
   padding: 8px 12px;
   border: 1px solid var(--line);
@@ -190,6 +194,7 @@ body {
 }
 .preset:hover { background: var(--gold); color: #1a0b2e; }
 
+/* ---- pickers ---- */
 .layout-thumbs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .layout-thumb {
   display: flex;
@@ -220,6 +225,7 @@ body {
 }
 .grade-chip.active { background: var(--chip, var(--pink)); color: #12081f; border-color: var(--chip, var(--pink)); }
 
+/* ---- stage ---- */
 .stage { min-width: 0; }
 .size-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
 .size-tab {
@@ -264,6 +270,7 @@ body {
 .stage-note { color: var(--muted); font-size: 13px; text-align: center; }
 #status { min-height: 1.4em; color: var(--gold); font-size: 14px; text-align: center; }
 
+/* ---- export ---- */
 .export-row {
   display: flex;
   justify-content: space-between;
